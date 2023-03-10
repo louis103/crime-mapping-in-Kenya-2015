@@ -1,0 +1,58 @@
+<html>
+
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', { 'packages': ['bar'] });
+    google.charts.setOnLoadCallback(drawStuff);
+
+    function drawStuff() {
+      var data = new google.visualization.arrayToDataTable([
+        ['Type of Crime', 'Recorded Cases'],
+        ["Homicide", 44],
+        ["Immorality Offences", 31],
+        ["Robbery", 12],
+        ["Breakings", 10],
+        ['Stock Theft', 3],
+        ["Stealing", 44],
+        ["Theft By Servants", 31],
+        ["Vehicle Theft", 12],
+        ["Drugs", 100],
+        ['Traffic', 3],
+        ["Criminal Damages", 44],
+        ["Economy Crimes", 31],
+        ["Corruption", 12],
+        ["Police Offences", 10],
+        ['Tourists Offences', 3],
+        ["Penal Code", 44],
+      ]);
+
+      var options = {
+        title: 'Crime Mapping',
+        width: 600,
+        legend: { position: 'none' },
+        chart: {
+          title: 'Crime Mapping',
+          subtitle: 'Distribution of Crimes in Kenya'
+        },
+        bars: 'horizontal', // Required for Material Bar Charts.
+        colors: ['red', '#004411'],
+        axes: {
+          x: {
+            0: { side: 'top', label: 'Cases' } // Top x-axis.
+          }
+        },
+        bar: { groupWidth: "90%" }
+      };
+
+      var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+      chart.draw(data, options);
+    };
+  </script>
+</head>
+
+<body>
+  <div id="top_x_div" style="width: 600px; height: 500px;"></div>
+</body>
+
+</html>

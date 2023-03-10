@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Mapping</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'
+        rel='stylesheet' />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.css" />
+    <link rel="stylesheet" href="https://edihasaj.github.io/leaflet-coord-projection/coord-projection.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.76.0/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+    <link rel="stylesheet" href="helpers/leaflet.zoomhome.css" />
+    <link rel="stylesheet" href="helpers/style.min.css" />
+    <!-- Zoom Box cdn -->
+    <link rel="stylesheet" href="helpers/leaflet-control-boxzoom.css" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
+    <!-- Measure options for measuring lengths in Map -->
+    <script type="text/javascript" src="helpers/measure_options.json"></script>
+    <script type="text/javascript" src="./Data/usdata.geojson"></script>
+    <script type="text/javascript" src="./Data/2015_kenya_crimes.geojson"></script>
+    <script type="text/javascript" src="helpers/measure_options.json"></script>
+    <script src="helpers/leaflet.zoomhome.min.js"></script>
+    <script src="helpers/leaflet-control-boxzoom.js"></script>
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.0/proj4.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js"></script>
+    <script type="text/javascript"
+        src="https://edihasaj.github.io/leaflet-coord-projection/coord-projection.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.76.0/src/L.Control.Locate.min.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+    <!-- Navbar as a heading -->
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1" id="g">Crime Incidents Visualization using Geovisualization Tools &
+                Techniques</span>
+        </div>
+    </nav>
+    <div id="sidebar" style="display: flex">
+        <div class="selection" style="width: 20%; margin-right: 15px; display: flex; flex-direction: column;">
+            <!-- where to select what to visualize -->
+            <form id="selectForm" class="selectForm">
+                <select class="form-select" aria-label="Default select example" id="selection_form">
+                    <option selected>Select A Crime to Visualize</option>
+                    <option value="Homicide">Homicide</option>
+                    <option value="morality_o">Immorality Offences</option>
+                    <option value="robbery">Robbery</option>
+                    <option value="breakings">Breakings</option>
+                    <option value="stock_stef">Theft of Stock</option>
+                    <option value="stealing">Stealing</option>
+                    <option value="servant_th">Theft By Servants</option>
+                    <option value="gta">Vehicle Theft</option>
+                    <option value="drugs">Drug Trafficking</option>
+                    <option value="traffic_of">Traffic Offences</option>
+                    <option value="criminal_d">Criminal Damage</option>
+                    <option value="economic_c">Economy Crimes</option>
+                    <option value="corruption">Corruption</option>
+                    <option value="Offences_l">Offences Involving Police Offices</option>
+                    <option value="offences_t">Offences Involving Tourists</option>
+                    <option value="other_fenc">Other Penal Code Offences</option>
+                </select>
+                <div class="d-grid gap-2 m-2 pt-3">
+                    <button class="btn btn-success" type="submit">Visualize</button>
+                    <button class="btn btn-warning" type="submit" onclick="reload()">Reload Page</button>
+                </div>
+            </form>
+        </div>
+        <!-- sidebar to hold graph elements -->
+        <!--Top menu -->
+        <div class="sidebar">
+            <div class="d-grid gap-2">
+                <button class="btn btn-danger btn-sm" type="button" onclick="closeSidebar()">Close X</button>
+            </div>
+            <!-- start of graph divs -->
+            <div class="graphs">
+                <h5 id="county" style="text-align: center; margin-bottom: 10px;">Visualization for: </h5>
+                <div id="top_x_div" style="width: 500px; height: 500px;"></div>
+                <hr style="height: 7px; background: rgb(70, 67, 67);" />
+                <div id="piechart" style="width: 500px; height: 500px;"></div>
+                <hr style="height: 7px; background: rgb(70, 67, 67);" />
+                <div id="donutchart" style="width: 500px; height: 500px;"></div>
+                <hr style="height: 7px; background: rgb(70, 67, 67);" />
+            </div>
+            <!-- end of graph divs -->
+        </div>
+        <!-- end of sidebar -->
+        <!-- Main container holding the map! -->
+        <div class="mapcontainer" style="width: 80%; margin-right: 20px;">
+            <div id="map"></div>
+        </div>
+    </div>
+    <!-- Linking javascript -->
+    <!-- <script src="allcharts.js"></script> -->
+    <script src="map.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
